@@ -1,0 +1,11 @@
+备注：
+.ps1后缀的文件执行这条命令必须在当前文件目录下执行：
+	有以下三种方式：
+1.当前文件夹路径输入cmd
+2.当前目录下空地右击选择Git Bash Here
+3.选择要执行的文件右击编辑,下面命令框执行，尽量不要修改上方的代码
+域名之间及域名于命令之间需要用空格隔开，程序执行完成才算成功。
+
+PowerShell.exe -file 文件名 域名1 域名2 .....
+例如：
+PowerShell.exe -file powershell.ps1 www.jiangjianyi.com www.jiangjianyi

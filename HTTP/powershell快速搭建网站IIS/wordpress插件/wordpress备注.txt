@@ -1,0 +1,7 @@
+wp_terms表   term_id，name商品类别名
+wp_term_taxonomy表 term_taxonomy_id, term_id
+wp_term_relationships表 object_id,term_taxonomy_id
+wp_posts表 post_type字段attachment，及下面product判断除id
+
+
+post_status=trash回收站

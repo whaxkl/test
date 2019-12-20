@@ -1,0 +1,26 @@
+打开D盘win-acme-trimmed目录或者解压win-acme.v2.1.1.593.x64.trimmed.zip
+找到wacs.exe右键以管理员方式运行
+选择N
+
+N: Create new certificate // 创建新证书
+M: Create new certificate with advanced options // 使用高级选项创建新证书
+L: List scheduled renewals // 自动续费
+R: Renew scheduled // 续费单个
+S: Renew specific // 续费多个
+A: Renew *all* // 全部续费
+V: Revoke certificate // 取消证书
+C: Cancel scheduled renewal // 取消某个自动续费
+X: Cancel *all* scheduled renewals // 取消全部自动续费
+Q: Quit
+
+
+选择1
+
+1: Single binding of an IIS site // 绑定单一IIS站点
+2: SAN certificate for all bindings of an IIS site // 绑定所有IIS站点
+3: SAN certificate for all bindings of multiple IIS sites // 绑定多个IIS站点
+4: Manually input host names // 手动输入域名
+C: Cancel
+
+
+
