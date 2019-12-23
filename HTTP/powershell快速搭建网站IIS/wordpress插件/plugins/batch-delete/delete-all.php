@@ -1,15 +1,15 @@
 <?php
 global $wpdb;
-//Ëé∑ÂèñÂΩìÂâçÊñá‰ª∂ÊâÄÂú®ÁõÆÂΩï
+//ªÒ»°µ±«∞Œƒº˛À˘‘⁄ƒø¬º
 define("__S__",str_replace("\\","/",dirname(__FILE__)));
 //echo __FILE__;echo __S__;
-//Ëé∑ÂèñwordpressÊâÄÂú®ÁõÆÂΩï
+//ªÒ»°wordpressÀ˘‘⁄ƒø¬º
 define("__ROOT__",substr(__S__,0,-32));
-//ÂºïÁî®wp-config.phpÊñá‰ª∂ÔºåËé∑ÂèñÊï∞ÊçÆÂ∫ì‰ø°ÊÅØ
+//“˝”√wp-config.phpŒƒº˛£¨ªÒ»° ˝æ›ø‚–≈œ¢
 require(__ROOT__."/wp-config.php");
 @$conn = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 if(!$conn){
-    echo "<script>alert('Êìç‰ΩúÂ§±Ë¥•');</script>";
+    echo "<script>alert('≤Ÿ◊˜ ß∞‹');</script>";
     echo "<script>history.back();</script>";
     exit;
 }
@@ -39,12 +39,12 @@ if(!empty($_POST)){
             $str.=')';
             $del_sql="delete from wp_posts where ID in $str and ID>9";
             mysqli_query($conn,$del_sql);
-            $count_sql="update wp_term_taxonomy set count=0 where taxonomy='product_cat'";
+	    $count_sql="update wp_term_taxonomy set count=0 where taxonomy='product_cat'";
             mysqli_query($conn,$count_sql);
         }
         echo "<script>alert('Deleted Successfully');</script>";
-        echo "<script>history.back();</script>";
-        exit;
+    	echo "<script>history.back();</script>";
+    	exit;
     }
     if($title_all=='title_all'){
         $title=$_POST['title'];
@@ -57,7 +57,7 @@ if(!empty($_POST)){
         $sql="select * from wp_posts where ID>9 and post_title like '%".$title."%' and post_type='product'";
         $result=$conn->query($sql);
         $data_id=mysqli_fetch_all($result,MYSQLI_ASSOC);
-        $data_id=array_reverse($data_id);
+	$data_id=array_reverse($data_id);
         $data_id=array_column($data_id,'ID');
         $mark=0;
         foreach($data as $key=>$val){
@@ -76,20 +76,32 @@ if(!empty($_POST)){
         $str=substr($str,0,-1);
         if($str!=''){
             $str.=')';
-            $del_sql="delete from wp_posts where ID in {$str} and ID>9";
-            mysqli_query($conn,$del_sql);
-            foreach($data_id as $keys=>$values){
+	    foreach($data_id as $keys=>$values){
                 $count_sql="select term_taxonomy_id from wp_term_relationships where object_id={$values} and term_taxonomy_id <> 2";
                 $id=mysqli_query($conn,$count_sql);
-                $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
-                $count_id=$id_data[0]['term_taxonomy_id'];
+	        $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
+		$count_id_len=count($id_data);
+		if($count_id_len==1){
+		    $count_id=$id_data[0]['term_taxonomy_id'];
+		    $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
+		    mysqli_query($conn,$count_id_sql);
+		}else if($count_id_len>1){
+		    foreach($id_data as $k=>$v){
+		        $count_id=$v['term_taxonomy_id'];
+		        $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
+		        mysqli_query($conn,$count_id_sql);
+		    }
+		}
+                /*$count_id=$id_data[0]['term_taxonomy_id'];
                 $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
-                mysqli_query($conn,$count_id_sql);
+                mysqli_query($conn,$count_id_sql);*/
             }
+            $del_sql="delete from wp_posts where ID in {$str} and ID>9";
+            mysqli_query($conn,$del_sql);
         }
-        echo "<script>alert('Deleted Successfully');</script>";
-        echo "<script>history.back();</script>";
-        exit;
+	echo "<script>alert('Deleted Successfully');</script>";
+    	echo "<script>history.back();</script>";
+    	exit;
     }
     if($category_all=='category_all'){
         $category=$_POST['category'];
@@ -100,17 +112,22 @@ if(!empty($_POST)){
         }
         $category_sql="select term_id from wp_terms where `name` like '%".$category."%' order by term_id desc limit 1";
         $result=$conn->query($category_sql);
+	if(!$result){
+	    echo "<script>alert('Category Not Find');</script>";
+    	    echo "<script>history.back();</script>";
+    	    exit;
+	}
         $category_data=mysqli_fetch_all($result,MYSQLI_ASSOC);
         $term_id=$category_data[0]['term_id'];
         $wp_term_taxonomy_sql="select term_taxonomy_id from wp_term_taxonomy where term_id={$term_id}";
         $result_taxonomy=$conn->query($wp_term_taxonomy_sql);
         $term_taxonomy_data=mysqli_fetch_all($result_taxonomy,MYSQLI_ASSOC);
-        $term_taxonomy_data=array_reverse($term_taxonomy_data);
+	$term_taxonomy_data=array_reverse($term_taxonomy_data);
         $term_taxonomy_id=$term_taxonomy_data[0]['term_taxonomy_id'];
         $id_sql="select object_id from wp_term_relationships where term_taxonomy_id={$term_taxonomy_id}";
         $result_relationships=$conn->query($id_sql);
         $term_relationships_data=mysqli_fetch_all($result_relationships,MYSQLI_ASSOC);
-        $term_relationships_data=array_reverse($term_relationships_data);
+	$term_relationships_data=array_reverse($term_relationships_data);
         $str='(';
         $object_id=array_column($term_relationships_data,'object_id');
         foreach($data as $key=>$val){
@@ -129,14 +146,22 @@ if(!empty($_POST)){
         $str=substr($str,0,-1);
         if($str!=''){
             $str.=')';
+	    $not_category_sql="select term_taxonomy_id from wp_term_relationships where term_taxonomy_id <> {$term_taxonomy_id} and term_taxonomy_id <> 2 and object_id in {$str}";
+	    $result=$conn->query($not_category_sql);
+            $data_id=mysqli_fetch_all($result,MYSQLI_ASSOC);
+            $data_id=array_column($data_id,'term_taxonomy_id');
+	    foreach($data_id as $keys=>$values){
+		$del_not_category_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$values}";
+		mysqli_query($conn,$del_not_category_sql);
+            }
             $del_sql="delete from wp_posts where ID in {$str} and ID>9";
             mysqli_query($conn,$del_sql);
-            $count_sql="update wp_term_taxonomy set count=0 where term_id={$term_id}";
+	    $count_sql="update wp_term_taxonomy set count=0 where term_id={$term_id}";
             mysqli_query($conn,$count_sql);
         }
-        echo "<script>alert('Deleted Successfully');</script>";
-        echo "<script>history.back();</script>";
-        exit;
+	echo "<script>alert('Deleted Successfully');</script>";
+    	echo "<script>history.back();</script>";
+    	exit;
     }
     if($id_all=='id_all'){
         $id_one=$_POST['id_one'];
@@ -180,20 +205,29 @@ if(!empty($_POST)){
         $str=substr($str,0,-1);
         if($str!=''){
             $str.=')';
-            $del_sql="delete from wp_posts where ID in {$str} and ID>9";
-            mysqli_query($conn,$del_sql);
-            foreach($data_id as $keys=>$values){
+	    foreach($data_id as $keys=>$values){
                 $count_sql="select term_taxonomy_id from wp_term_relationships where object_id={$values} and term_taxonomy_id <> 2";
                 $id=mysqli_query($conn,$count_sql);
-                $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
-                $count_id=$id_data[0]['term_taxonomy_id'];
-                $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
-                mysqli_query($conn,$count_id_sql);
+	        $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
+		$count_id_len=count($id_data);
+		if($count_id_len==1){
+		    $count_id=$id_data[0]['term_taxonomy_id'];
+		    $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
+		    mysqli_query($conn,$count_id_sql);
+		}else if($count_id_len>1){
+		    foreach($id_data as $k=>$v){
+		        $count_id=$v['term_taxonomy_id'];
+		        $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
+		        mysqli_query($conn,$count_id_sql);
+		    }
+		}
             }
+            $del_sql="delete from wp_posts where ID in {$str} and ID>9";
+            mysqli_query($conn,$del_sql);
         }
-        echo "<script>alert('Deleted Successfully');</script>";
-        echo "<script>history.back();</script>";
-        exit;
+	echo "<script>alert('Deleted Successfully');</script>";
+    	echo "<script>history.back();</script>";
+    	exit;
     }
     if($move_title_all=='move_title_all'){
         $move_title=$_POST['move_title'];
@@ -233,32 +267,32 @@ if(!empty($_POST)){
         foreach($data_id as $key=>$val){
             $str.=$val.',';
         }
-        /*foreach($data_id as $keys=>$values){
-                    $count_sql="select term_taxonomy_id from wp_term_relationships where object_id={$values} and term_taxonomy_id <> 2";
-                    $id=mysqli_query($conn,$count_sql);
-                $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
-                    $count_id=$id_data[0]['term_taxonomy_id'];
-                    $count_del_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id=$count_id";
-            $count_add_id_sql="update wp_term_taxonomy set count=count+1 where term_taxonomy_id=$term_taxonomy_id";
-            echo $count_del_id_sql;echo $count_add_id_sql;die;
-                    mysqli_query($conn,$count_del_id_sql);
-            mysqli_query($conn,$count_add_id_sql);
-                }*/
-        $str=substr($str,0,-1);
-        if($str!=''){
-            $str.=')';
-            foreach($data_id as $keys=>$values){
+	/*foreach($data_id as $keys=>$values){
                 $count_sql="select term_taxonomy_id from wp_term_relationships where object_id={$values} and term_taxonomy_id <> 2";
                 $id=mysqli_query($conn,$count_sql);
-                $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
+	        $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
                 $count_id=$id_data[0]['term_taxonomy_id'];
                 $count_del_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id=$count_id";
+		$count_add_id_sql="update wp_term_taxonomy set count=count+1 where term_taxonomy_id=$term_taxonomy_id";
+		echo $count_del_id_sql;echo $count_add_id_sql;die;
                 mysqli_query($conn,$count_del_id_sql);
-                $count_add_id_sql="update wp_term_taxonomy set count=count+1 where term_taxonomy_id=$term_taxonomy_id";
-                mysqli_query($conn,$count_add_id_sql);
+		mysqli_query($conn,$count_add_id_sql);
+            }*/
+	$str=substr($str,0,-1);
+        if($str!=''){
+            $str.=')';
+	    foreach($data_id as $keys=>$values){
+                $count_sql="select term_taxonomy_id from wp_term_relationships where object_id={$values} and term_taxonomy_id <> 2";
+                $id=mysqli_query($conn,$count_sql);
+	        $id_data=mysqli_fetch_all($id,MYSQLI_ASSOC);
+                $count_id=$id_data[0]['term_taxonomy_id'];
+                $count_del_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id=$count_id";
+		mysqli_query($conn,$count_del_id_sql);
+		$count_add_id_sql="update wp_term_taxonomy set count=count+1 where term_taxonomy_id=$term_taxonomy_id";
+		mysqli_query($conn,$count_add_id_sql);
             }
             $move_sql="update wp_term_relationships set term_taxonomy_id={$term_taxonomy_id} where object_id in $str and term_taxonomy_id <> 2 and object_id>1";
-            mysqli_query($conn,$move_sql);
+            mysqli_query($conn,$move_sql); 
         }
         echo "<script>alert('Move Successfully');</script>";
         echo "<script>history.back();</script>";

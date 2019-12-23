@@ -25,7 +25,7 @@ if(is_admin()){
 }
 */
 function zb_create_content_page(){
-    echo "<h1>Batch Delete Product</h1>
+        echo "<h1>Batch Delete Product</h1>
 <form action='/wp-content/plugins/batch-delete/delete-all.php' method='post' enctype='multipart/form-data' id='delete_all'>
     <input type='hidden' name='delete_all' value='delete_all'>
     <input type='submit' value='Delete All'>
