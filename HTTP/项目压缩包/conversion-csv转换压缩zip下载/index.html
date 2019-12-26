@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    form{
+        width: 374px;
+    }
+    input{
+        margin-bottom: 20px;
+    }
+    input[type="file"]{
+        float: right;
+    }
+    li{
+        list-style: none;
+        overflow: hidden;
+    }
+</style>
+<body>
+<form action="index.php" method="post" enctype="multipart/form-data">
+    <ul>
+        <li><lable>每页的数量：</lable><input type="number" name="num"></li>
+        <li style="margin-bottom: 18px;">
+            <lable>title关键词位置:</lable>
+            <select name="title" id="title">
+                <option value="">选择关键词添加位置</option>
+                <option value="1">前边</option>
+                <option value="2">中间</option>
+                <option value="3">后边</option>
+            </select>
+        </li>
+        <li><lable>tags标签个数：</lable><input type="number" name="tags"></li>
+        <li><lable>介绍关键词个数：</lable><input type="number" name="desc"></li>
+        <li><lable>转换文件：</lable><input type="file" name="file"></li>
+        <li><lable>关键词文件：</lable><input type="file" name="keyword"></li>
+        <li><button class="layui-btn data-add-btn layui-btn-sm" id="import">产品导入</button></li>
+    </ul>
+</form>
+</body>
+</html>
