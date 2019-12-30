@@ -1,28 +1,24 @@
-#Write-Host æ‰§è¡Œä¸­...
+Import-Module WebAdministration
 For($i=0;$i -lt $args.Count; $i++)
 {
-    cp -r D:\wordpress\wordpress D:\wordpress\$($args[$i])
-}
-#Import-Module WebAdministration
-#For($i=0;$i -lt $args.Count; $i++)
-#{
-  #Write-Host æ‰§è¡Œä¸­...
-  #cp -r D:\wordpress\wordpress D:\wordpress\$($args[$i])
+    if(!(Test-Path D:\wordpress\$($args[$i]))){
+        cp -r D:\wordpress\wordpress D:\wordpress\$($args[$i])
+    }
     #Write-Host $args
     #exit
-    #æ–°å»ºåº”ç”¨ç¨‹åºæ±  api.dd.com
+    #ĞÂ½¨Ó¦ÓÃ³ÌĞò³Ø api.dd.com
     #New-Item iis:\AppPools\api.dd.com
-    #Set-ItemProperty iis:\AppPools\$1 managedRuntimeVersion v4.0 #æ›´æ”¹åº”ç”¨ç¨‹åºæ± ç‰ˆæœ¬ä¸º4.0ï¼Œé»˜è®¤ä¸º2.0ï¼ˆWindows Server 2008 R2ï¼‰
-    #æ–°å»ºç«™ç‚¹ api.dd.comï¼Œä¸»æœºå¤´ä¸º api.dd.comï¼Œè·¯ç»ä¸º d:\apidd
-  #New-Item iis:\Sites\$($args[$i]) -bindings @{protocol="http";bindingInformation=":80:$($args[$i])"} -physicalPath d:\wordpress\$($args[$i])
-    #ä¸ºç«™ç‚¹ api.dd.com æ·»åŠ ä¸»æœºå¤´ imageapi.dd2.com
+    #Set-ItemProperty iis:\AppPools\$1 managedRuntimeVersion v4.0 #¸ü¸ÄÓ¦ÓÃ³ÌĞò³Ø°æ±¾Îª4.0£¬Ä¬ÈÏÎª2.0£¨Windows Server 2008 R2£©
+    #ĞÂ½¨Õ¾µã api.dd.com£¬Ö÷»úÍ·Îª api.dd.com£¬Â·¾­Îª d:\apidd
+    New-Item iis:\Sites\$($args[$i]) -bindings @{protocol="http";bindingInformation=":80:$($args[$i])"} -physicalPath D:\wordpress\$($args[$i])
+    #ÎªÕ¾µã api.dd.com Ìí¼ÓÖ÷»úÍ· imageapi.dd2.com
     #New-WebBinding -Name "$args" -IPAddress "*" -Port 80 -HostHeader $args
-    #ä¸ºç«™ç‚¹ api.dd.com æ›´æ”¹åº”ç”¨ç¨‹åºæ± ä¸º api.dd.com
-  #Set-ItemProperty IIS:\Sites\$($args[$i]) -name applicationPool -value DefaultAppPool
-    #åœ¨ç«™ç‚¹api.dd.comä¸‹æ–°å»ºåº”ç”¨ç¨‹åºcust_account_api ï¼Œç›®å½•ä¸ºD:\cust_account_api_new
+    #ÎªÕ¾µã api.dd.com ¸ü¸ÄÓ¦ÓÃ³ÌĞò³ØÎª api.dd.com
+    Set-ItemProperty IIS:\Sites\$($args[$i]) -name applicationPool -value DefaultAppPool
+    #ÔÚÕ¾µãapi.dd.comÏÂĞÂ½¨Ó¦ÓÃ³ÌĞòcust_account_api £¬Ä¿Â¼ÎªD:\cust_account_api_new
     #new-item iis:\sites\$args\cust_account_api -type Application -physicalpath D:\wordpress\$args\cust_account_api_new
     #Set-ItemProperty IIS:\Sites\$args\cust_account_api -name applicationPool -value $args
-    #åœ¨ç«™ç‚¹ServerLogä¸‹æ–°å»ºè™šæ‹Ÿç›®å½•cust_account_api ï¼Œç›®å½•ä¸ºD:\cust_account_api_new\log
+    #ÔÚÕ¾µãServerLogÏÂĞÂ½¨ĞéÄâÄ¿Â¼cust_account_api £¬Ä¿Â¼ÎªD:\cust_account_api_new\log
     #new-item D:\wordpress\$args\cust_account_api_new\log -type directory -force
 
-#}
+}
