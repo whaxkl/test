@@ -5,3 +5,10 @@ wp_posts表 post_type字段attachment，及下面product判断除id
 
 
 post_status=trash回收站
+
+
+
+
+
+////重要主题footer中do_action()的add_action()存放位置
+D:\wordpress\customas.cn\wp-content\themes\storefront\inc\storefront-template-hooks.php

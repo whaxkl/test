@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 Plugin Name: batch-delete
 Description: 显示fuck the world!
