@@ -22,7 +22,7 @@ if(!empty($_POST)){
     $sql="select * from wp_posts where ID>9";
     $result=$conn->query($sql);
     $data=mysqli_fetch_all($result,MYSQLI_ASSOC);
-    $data=array_reverse($data);
+    arsort($data);//$data=array_reverse($data);
     if($delete_all=='delete_all'){
         $str='(';
         foreach($data as $key=>$val){
@@ -54,11 +54,16 @@ if(!empty($_POST)){
             echo "<script>history.back();</script>";
             exit;
         }
+	foreach ($data as $keyb => $valb) {
+            if($valb['post_parent']!=0){
+                unset($data[$keyb]);
+            }
+        }
         $str='(';
         $sql="select * from wp_posts where ID>9 and post_title like '%".$title."%' and post_type='product'";
         $result=$conn->query($sql);
         $data_id=mysqli_fetch_all($result,MYSQLI_ASSOC);
-	$data_id=array_reverse($data_id);
+	arsort($data_id);//$data_id=array_reverse($data_id);
         $data_id=array_column($data_id,'ID');
         $mark=0;
         foreach($data as $key=>$val){
@@ -86,6 +91,19 @@ if(!empty($_POST)){
                     $count_id_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$count_id}";
                     mysqli_query($conn,$count_id_sql);
                 }
+            }
+	    $id_old=[];
+            $str=substr($str,0,-1);
+            foreach ($data_id as $keybs => $valbs) {
+                $parent_sql = "select * from wp_posts where ID>9 and post_parent={$valbs}";
+                $result = $conn->query($parent_sql);
+                $parent_data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                $parent_data = array_column($parent_data, 'ID');
+                $id_old=array_merge($id_old,$parent_data);
+            }
+            if(!empty($id_old)){
+                $id_old_str=implode(',',$id_old);
+                $str.=','.$id_old_str.')';
             }
             $del_sql="delete from wp_posts where ID in {$str} and ID>9";
             mysqli_query($conn,$del_sql);
@@ -115,12 +133,17 @@ if(!empty($_POST)){
         $wp_term_taxonomy_sql="select term_taxonomy_id from wp_term_taxonomy where term_id={$term_id}";
         $result_taxonomy=$conn->query($wp_term_taxonomy_sql);
         $term_taxonomy_data=mysqli_fetch_all($result_taxonomy,MYSQLI_ASSOC);
-	$term_taxonomy_data=array_reverse($term_taxonomy_data);
+	arsort($term_taxonomy_data);//$term_taxonomy_data=array_reverse($term_taxonomy_data);
         $term_taxonomy_id=$term_taxonomy_data[0]['term_taxonomy_id'];
         $id_sql="select object_id from wp_term_relationships where term_taxonomy_id={$term_taxonomy_id}";
         $result_relationships=$conn->query($id_sql);
         $term_relationships_data=mysqli_fetch_all($result_relationships,MYSQLI_ASSOC);
-	$term_relationships_data=array_reverse($term_relationships_data);
+	arsort($term_relationships_data);//$term_relationships_data=array_reverse($term_relationships_data);
+	foreach ($data as $keyb => $valb) {
+            if($valb['post_parent']!=0){
+                unset($data[$keyb]);
+            }
+        }
         $str='(';
         $object_id=array_column($term_relationships_data,'object_id');
         foreach($data as $key=>$val){
@@ -146,6 +169,19 @@ if(!empty($_POST)){
 	    foreach($data_id as $keys=>$values){
 		$del_not_category_sql="update wp_term_taxonomy set count=count-1 where term_taxonomy_id={$values}";
 		mysqli_query($conn,$del_not_category_sql);
+            }
+	    $id_old=[];
+            $str=substr($str,0,-1);
+            foreach ($object_id as $keybs => $valbs) {
+                $parent_sql = "select * from wp_posts where ID>9 and post_parent={$valbs}";
+                $result = $conn->query($parent_sql);
+                $parent_data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                $parent_data = array_column($parent_data, 'ID');
+                $id_old=array_merge($id_old,$parent_data);
+            }
+            if(!empty($id_old)){
+                $id_old_str=implode(',',$id_old);
+                $str.=','.$id_old_str.')';
             }
             $count_sql="update wp_term_taxonomy set count=0 where term_id={$term_id}";
             mysqli_query($conn,$count_sql);
@@ -182,6 +218,11 @@ if(!empty($_POST)){
         $result=$conn->query($sql);
         $data_id=mysqli_fetch_all($result,MYSQLI_ASSOC);
         $data_id=array_column($data_id,'ID');
+	foreach ($data as $keyb => $valb) {
+            if($valb['post_parent']!=0){
+                unset($data[$keyb]);
+            }
+        }
         $str='(';
         $mark=0;
         foreach($data as $key=>$val){
@@ -210,6 +251,19 @@ if(!empty($_POST)){
                     mysqli_query($conn,$count_id_sql);
                 }
             }
+	    $id_old=[];
+            $str=substr($str,0,-1);
+            foreach ($data_id as $keybs => $valbs) {
+                $parent_sql = "select * from wp_posts where ID>9 and post_parent={$valbs}";
+                $result = $conn->query($parent_sql);
+                $parent_data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+                $parent_data = array_column($parent_data, 'ID');
+                $id_old=array_merge($id_old,$parent_data);
+            }
+            if(!empty($id_old)){
+                $id_old_str=implode(',',$id_old);
+                $str.=','.$id_old_str.')';
+            }
             $del_sql="delete from wp_posts where ID in {$str} and ID>9";
             mysqli_query($conn,$del_sql);
             $del_relationships_sql="delete from wp_term_relationships where object_id in {$str} and object_id>1";
@@ -235,7 +289,7 @@ if(!empty($_POST)){
             echo "<script>history.back();</script>";
             exit;
         }
-        $data_id=array_reverse($data_id);
+        arsort($data_id);//$data_id=array_reverse($data_id);
         $data_id=array_column($data_id,'ID');
 
         $category_sql="select term_id from wp_terms where `name` like '%".$move_category."%' order by term_id desc limit 1";
@@ -250,7 +304,7 @@ if(!empty($_POST)){
         $wp_term_taxonomy_sql="select term_taxonomy_id from wp_term_taxonomy where term_id={$term_id}";
         $result_taxonomy=$conn->query($wp_term_taxonomy_sql);
         $term_taxonomy_data=mysqli_fetch_all($result_taxonomy,MYSQLI_ASSOC);
-        $term_taxonomy_data=array_reverse($term_taxonomy_data);
+        arsort($term_taxonomy_data);//$term_taxonomy_data=array_reverse($term_taxonomy_data);
         $term_taxonomy_id=$term_taxonomy_data[0]['term_taxonomy_id'];
 
         $str='(';

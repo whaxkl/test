@@ -1,4 +1,6 @@
 <?php
+//header("Content-type: text/html; charset=utf-8");
+header("Content-Type: text/html;charset=gb2312");
 global $wpdb;
 //获取当前文件所在目录
 $path=str_replace("\\","/",dirname(__FILE__));
@@ -33,12 +35,12 @@ if(!empty($_POST)) {
 	    $value.=$content_val;
 	    @file_put_contents($footer_root,$value);
         }
-        echo "<script>alert('cnzz add Successfully');</script>";
+        echo "<meta charset='UTF-8'><script>alert('cnzz 添加成功');</script>";
         echo "<script>history.back();</script>";
         exit;
     }
 }else{
-    echo "<script>alert('cnzz add Failure');</script>";
+    echo "<meta charset='UTF-8'><script>alert('cnzz 添加失败');</script>";
     echo "<script>history.back();</script>";
     exit;
 }

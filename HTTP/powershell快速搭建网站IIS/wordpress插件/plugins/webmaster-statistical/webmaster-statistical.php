@@ -26,14 +26,13 @@ if(is_admin()){
 */
 function zb_create_cnzz_page(){
 	$themes=get_stylesheet_directory();
-        echo "<h1>Cnzz Code</h1>
+        echo "<h1>Cnzz 代码</h1>
 <form action='/wp-content/plugins/webmaster-statistical/webmaster-statistical-all.php' method='post' enctype='multipart/form-data' id='delete_all'>
     
-    <textarea name='content' value='' rows='10' cols='40' placeholder='请输入统计代码'>
-    </textarea>
+    <textarea name='content' value='' rows='15' cols='50' placeholder='请输入统计代码'></textarea>
     <input type='hidden' name='cnzz_all' value='cnzz_all'>
     <input type='hidden' name='themes' value=$themes>
-    <input type='submit' value='Add cnzz'>
+    <input type='submit' value='添加 cnzz'>
 </form>
 ";
 /*$footer_root=$themes.'/footer.php';
@@ -50,7 +49,7 @@ function zb_create_cnzz_page(){
 
 // 注册菜单
 function zb_register_cnzz(){
-    add_menu_page( 'Webmaster Statistical', 'Webmaster Statistical', 'manage_options', 'webmaster-statistical', 'zb_create_cnzz_page');
+    add_menu_page( '站长统计', '站长统计', 'manage_options', 'webmaster-statistical', 'zb_create_cnzz_page','dashicons-admin-plugins');
 }
 //if(!defined("WP_UNINSTALL_PLUGIN"))
 //exit();

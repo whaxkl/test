@@ -21,7 +21,9 @@ if(!empty($_POST)) {
         $sql = "select * from wp_posts where ID>9 and post_type='product'";
         $result = $conn->query($sql);
         $data_data = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        $data = array_reverse($data_data);
+	$data = $data_data;//array_reverse($data_data);
+	arsort($data);
+	asort($data_data);
 
         $sql = "select * from wp_posts where ID>9";
         $result = $conn->query($sql);
@@ -31,13 +33,18 @@ if(!empty($_POST)) {
         $num=0;
         $count_num=0;
         $suspicious_id=[];
+	foreach ($data_all as $keyb => $valb) {
+            if($valb['post_parent']!=0){
+                unset($data_all[$keyb]);
+            }
+        }
         foreach ($data_all as $key => $val) {
             if ($val['post_type']!='product' && $val['post_mime_type']=='image/jpeg') {
                 $count_num++;
             }
             if (in_array($val['ID'],$data_all_id)) {
                 if($count_num-$num==0 && $num>0){
-		    //var_dump($data_all[$key],$data_all[$id],$id);die;
+                    //var_dump($data_all[$key],$data_all[$id],$id);die;
                     $suspicious_id[]=$data_all[$id];
                     $num=$count_num;
                 }else{
@@ -49,8 +56,16 @@ if(!empty($_POST)) {
                 $id=$key;
             }
         }
+	foreach ($suspicious_id as $keybs => $valbs) {
+            $parent_id=$valbs['ID'];
+            $parent_sql = "select * from wp_posts where ID>9 and post_parent={$parent_id}";
+            $result = $conn->query($parent_sql);
+            $parent_data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+            if(count($parent_data)>0){
+                unset($suspicious_id[$keybs]);
+            }
+        }
 	$len=count($suspicious_id);
-	//var_dump($suspicious_id,'<h1>asdfasdfasf</h1>');
 	//if($len>0){
 	    //unset($suspicious_id[$len-1]);
 	//}
@@ -64,7 +79,7 @@ if(!empty($_POST)) {
             $max_price = $product_price_data[0]['max_price'];
             if (empty($array)) {
                 $array[$id] = ['post_title' => $v['post_title'], 'min_price' => $min_price, 'max_price' => $max_price];
-            } else {//34
+            } else {
                 $make = 1;
                 foreach ($array as $keyd => $valued) {
                     if (stripos($valued['post_title'], substr($v['post_title'], 0, -3)) !== false
