@@ -1,0 +1,6 @@
+{
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.10",
+        "parsecsv/php-parsecsv": "^1.1"
+    }
+}
